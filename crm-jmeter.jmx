@@ -32,16 +32,16 @@
               <elementProp name="" elementType="HTTPArgument">
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
-  &quot;login&quot;: &quot;0948005558&quot;,&#xd;
-  &quot;password&quot;: &quot;pass1wrd&quot;&#xd;
+    &quot;login&quot;: &quot;0948005558&quot;,&#xd;
+    &quot;password&quot;: &quot;pass1wrd&quot;&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
             </collectionProp>
           </elementProp>
-          <stringProp name="HTTPSampler.domain">sso-api-dev.minhhop.net</stringProp>
-          <stringProp name="HTTPSampler.port">8080</stringProp>
-          <stringProp name="HTTPSampler.protocol">http</stringProp>
+          <stringProp name="HTTPSampler.domain">sso-api.commstree.net</stringProp>
+          <stringProp name="HTTPSampler.port"></stringProp>
+          <stringProp name="HTTPSampler.protocol">https</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
           <stringProp name="HTTPSampler.path">/1.0/login</stringProp>
           <stringProp name="HTTPSampler.method">POST</stringProp>
@@ -75,7 +75,7 @@ if (auth_token == null) {
             <stringProp name="scriptLanguage">groovy</stringProp>
           </JSR223Assertion>
           <hashTree/>
-          <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="true">
+          <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Login" enabled="true">
             <stringProp name="BeanShellAssertion.query">${__setProperty(token,${access_token})}</stringProp>
             <stringProp name="BeanShellAssertion.filename"></stringProp>
             <stringProp name="BeanShellAssertion.parameters"></stringProp>
@@ -83,36 +83,414 @@ if (auth_token == null) {
           </BeanShellAssertion>
           <hashTree/>
         </hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-          <collectionProp name="HeaderManager.headers">
-            <elementProp name="" elementType="Header">
-              <stringProp name="Header.name">Content-Type</stringProp>
-              <stringProp name="Header.value">application/json</stringProp>
-            </elementProp>
-          </collectionProp>
-        </HeaderManager>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="SOURCE API" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CREATE SOURCE" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{	&#xd;
+	&quot;name&quot;: &quot;Advertisement&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">1.0/meta/leads/sources</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Source ID" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">source_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Source" enabled="true">
+            <stringProp name="BeanShellAssertion.query">${__setProperty(source_id,${source_id})}</stringProp>
+            <stringProp name="BeanShellAssertion.filename"></stringProp>
+            <stringProp name="BeanShellAssertion.parameters"></stringProp>
+            <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+          </BeanShellAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET SOURCE" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/sources</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="UPDATE SOURCE" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{	&#xd;
+	&quot;name&quot;: &quot;Computer&quot;,&#xd;
+	&quot;priority&quot;: 1&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">1.0/meta/leads/sources/${source_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
-      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-        <collectionProp name="HeaderManager.headers">
-          <elementProp name="" elementType="Header">
-            <stringProp name="Header.name">Authorization</stringProp>
-            <stringProp name="Header.value">Bearer ${__property(token)}</stringProp>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="INDUSTRY" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CREATE INDUSTRY" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{	&#xd;
+	&quot;name&quot; : &quot;Industry 1&quot;&#xd;
+} 	</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
           </elementProp>
-          <elementProp name="" elementType="Header">
-            <stringProp name="Header.name"></stringProp>
-            <stringProp name="Header.value"></stringProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/industries</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname=" Extract Industry ID" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">industry_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Industry" enabled="true">
+            <stringProp name="BeanShellAssertion.query">${__setProperty(industry_id,${industry_id})}</stringProp>
+            <stringProp name="BeanShellAssertion.filename"></stringProp>
+            <stringProp name="BeanShellAssertion.parameters"></stringProp>
+            <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+          </BeanShellAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="UPDATE INDUSTRY" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{	&#xd;
+	&quot;name&quot; : &quot;LinPhuSong&quot; ,&#xd;
+	&quot;priority&quot;: 1,&#xd;
+	&quot;converted&quot;: false,&#xd;
+	&quot;is_default&quot;: false,&#xd;
+	&quot;color&quot;: &quot;red&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
           </elementProp>
-        </collectionProp>
-      </HeaderManager>
-      <hashTree/>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/industries/${industry_id}</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET INDUSTRY" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/industries/${industry_id}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET INDUSTRYS" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/industries</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DELETE INDUSTRY" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">1.0/meta/leads/industries/${industry_id}</stringProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+      </hashTree>
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="RATING API" enabled="true">
+        <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+        <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+          <boolProp name="LoopController.continue_forever">false</boolProp>
+          <stringProp name="LoopController.loops">1</stringProp>
+        </elementProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
+        <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+        <boolProp name="ThreadGroup.scheduler">false</boolProp>
+        <stringProp name="ThreadGroup.duration"></stringProp>
+        <stringProp name="ThreadGroup.delay"></stringProp>
+      </ThreadGroup>
+      <hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CREATE RATING" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{	&#xd;
+	&quot;name&quot;: &quot;Hot&quot;,&#xd;
+	&quot;is_default&quot;: false&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/ratings</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="JSON Extractor" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">rating_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+          <BeanShellAssertion guiclass="BeanShellAssertionGui" testclass="BeanShellAssertion" testname="BeanShell Assertion" enabled="true">
+            <stringProp name="BeanShellAssertion.query">${__setProperty(rating_id,${rating_id})}</stringProp>
+            <stringProp name="BeanShellAssertion.filename"></stringProp>
+            <stringProp name="BeanShellAssertion.parameters"></stringProp>
+            <boolProp name="BeanShellAssertion.resetInterpreter">false</boolProp>
+          </BeanShellAssertion>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET RATING" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/ratings</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="UPDATE RATING" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{	&#xd;
+	&quot;name&quot; : &quot;Warm&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/ratings/${rating_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DELETE RATING" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/meta/leads/ratings/${rating_id}</stringProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+      </hashTree>
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="LEAD API" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
           <stringProp name="LoopController.loops">1</stringProp>
         </elementProp>
-        <stringProp name="ThreadGroup.num_threads">100</stringProp>
+        <stringProp name="ThreadGroup.num_threads">1</stringProp>
         <stringProp name="ThreadGroup.ramp_time">1</stringProp>
         <boolProp name="ThreadGroup.scheduler">false</boolProp>
         <stringProp name="ThreadGroup.duration"></stringProp>
@@ -120,8 +498,15 @@ if (auth_token == null) {
       </ThreadGroup>
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="LIST LEAD API" enabled="true">
-          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-            <collectionProp name="Arguments.arguments"/>
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value"></stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
           </elementProp>
           <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
           <stringProp name="HTTPSampler.port">${PORT}</stringProp>
@@ -149,14 +534,923 @@ if (auth_token == null) {
           </ResponseAssertion>
           <hashTree/>
         </hashTree>
-        <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
-          <collectionProp name="HeaderManager.headers">
-            <elementProp name="" elementType="Header">
-              <stringProp name="Header.name">Content-Type</stringProp>
-              <stringProp name="Header.value">application/json</stringProp>
-            </elementProp>
-          </collectionProp>
-        </HeaderManager>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CREATE LEAD" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;first_name&quot;: &quot;xxxLinx&quot;,&#xd;
+  &quot;last_name&quot;: &quot;xxLinx&quot;,&#xd;
+  &quot;salutation&quot;: &quot;&quot;,&#xd;
+  &quot;stage&quot;: &quot;42ffd585-af79-41fe-bc2c-7b7b1b21b196&quot;,&#xd;
+  &quot;source&quot;: &quot;${__property(source_id)}&quot;,&#xd;
+  &quot;title&quot;: &quot;test_title&quot;,&#xd;
+  &quot;description&quot;: &quot;descriptions&quot;,&#xd;
+  &quot;industry&quot;: &quot;84242092-7e0a-4c77-beda-e8dc13fac6e0&quot;,&#xd;
+  &quot;website&quot;: &quot;minhop.net&quot;,&#xd;
+  &quot;email&quot;: &quot;kingkong01@gmail.com&quot;,&#xd;
+  &quot;phone&quot;: &quot;0975151444&quot;,&#xd;
+  &quot;mobile&quot;: &quot;0975151444&quot;,&#xd;
+  &quot;fax&quot;: &quot;0975151444&quot;,&#xd;
+  &quot;twitter&quot;: &quot;https://twitter.com/BarackObama&quot;,&#xd;
+  &quot;facebook&quot;: &quot;http://facebook.com/&quot;,&#xd;
+  &quot;linkedin&quot;: &quot;http://linkedin.com/&quot;,&#xd;
+  &quot;skype&quot;: &quot;http://skype.com/&quot;,&#xd;
+  &quot;tags&quot;:[&quot;tag1&quot;, &quot;tag2&quot;, &quot;tag3&quot;],&#xd;
+  &quot;owner&quot;: &quot;51a5434b-dab6-4992-90b7-446449c38ebe&quot;,&#xd;
+  &quot;company&quot;: &quot;company name&quot;,&#xd;
+  &quot;birth_day&quot;: &quot;767491200&quot;,&#xd;
+  &quot;revenue&quot;: &quot;&quot;,&#xd;
+  &quot;employees&quot;: &quot;4522&quot;&#xd;
+&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/leads</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extract Lead ID" enabled="true">
+            <stringProp name="JSONPostProcessor.referenceNames">lead_id</stringProp>
+            <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+            <stringProp name="JSONPostProcessor.match_numbers"></stringProp>
+          </JSONPostProcessor>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET LEAD" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;company_phone&quot;: null,&#xd;
+    &quot;industry_id&quot;: null,&#xd;
+    &quot;owner_id&quot;: &quot;af4ec815-a876-4525-842c-e4ec936aac82&quot;,&#xd;
+    &quot;latitude&quot;: 20.250615,&#xd;
+    &quot;rating&quot;: null,&#xd;
+    &quot;description&quot;: null,&#xd;
+    &quot;industry&quot;: null,&#xd;
+    &quot;source&quot;: {&#xd;
+        &quot;name&quot;: &quot;Social Network&quot;,&#xd;
+        &quot;id&quot;: &quot;cd9ed356-0aa6-4e19-b035-1c59cc763d96&quot;,&#xd;
+        &quot;type&quot;: &quot;LEAD&quot;,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;linkedin&quot;: null,&#xd;
+    &quot;title&quot;: null,&#xd;
+    &quot;skype&quot;: null,&#xd;
+    &quot;revenue&quot;: &quot;444&quot;,&#xd;
+    &quot;twitter&quot;: null,&#xd;
+    &quot;company&quot;: &quot;company name&quot;,&#xd;
+    &quot;id&quot;: &quot;cc088206-d993-4bb6-8f47-2bec77650ac3&quot;,&#xd;
+    &quot;fax&quot;: null,&#xd;
+    &quot;first_name&quot;: &quot;dao&quot;,&#xd;
+    &quot;email&quot;: &quot;thuytest1234@gmail.com&quot;,&#xd;
+    &quot;longitude&quot;: 105.974454,&#xd;
+    &quot;owner&quot;: {&#xd;
+        &quot;group_permission_id&quot;: null,&#xd;
+        &quot;gender&quot;: null,&#xd;
+        &quot;timezone&quot;: null,&#xd;
+        &quot;latitude&quot;: null,&#xd;
+        &quot;admin&quot;: false,&#xd;
+        &quot;language&quot;: null,&#xd;
+        &quot;sso_id&quot;: &quot;fb415567-4ff6-4ce8-9cf6-3b79ffbc8c16&quot;,&#xd;
+        &quot;about_me&quot;: null,&#xd;
+        &quot;twitter&quot;: null,&#xd;
+        &quot;report_to&quot;: null,&#xd;
+        &quot;id&quot;: &quot;af4ec815-a876-4525-842c-e4ec936aac82&quot;,&#xd;
+        &quot;first_name&quot;: &quot;thuy&quot;,&#xd;
+        &quot;email&quot;: &quot;thuyasdasddao@gmail.com&quot;,&#xd;
+        &quot;group&quot;: null,&#xd;
+        &quot;longitude&quot;: null,&#xd;
+        &quot;group_permission&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1531745348608,&#xd;
+        &quot;date_created&quot;: 1529988109014,&#xd;
+        &quot;stage_id&quot;: null,&#xd;
+        &quot;facebook&quot;: null,&#xd;
+        &quot;last_name&quot;: &quot;09750123123&quot;,&#xd;
+        &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/1529979296187zLWtq1.png&quot;,&#xd;
+        &quot;gender_id&quot;: null,&#xd;
+        &quot;chat_id&quot;: null,&#xd;
+        &quot;birth_day&quot;: null,&#xd;
+        &quot;full_name&quot;: &quot;thuy 09750123123&quot;,&#xd;
+        &quot;stage&quot;: null,&#xd;
+        &quot;group_id&quot;: null,&#xd;
+        &quot;organization&quot;: {&#xd;
+            &quot;last_updated&quot;: 1531808550565,&#xd;
+            &quot;address&quot;: null,&#xd;
+            &quot;date_created&quot;: 1528103630940,&#xd;
+            &quot;tax&quot;: null,&#xd;
+            &quot;title&quot;: null,&#xd;
+            &quot;start_in_month&quot;: null,&#xd;
+            &quot;phone&quot;: null,&#xd;
+            &quot;domain&quot;: &quot;minhhop&quot;,&#xd;
+            &quot;name&quot;: &quot;MINH HOP TECHNOLOGY&quot;,&#xd;
+            &quot;logo&quot;: null,&#xd;
+            &quot;id&quot;: &quot;dd32d3e6-ffd3-46bb-bf5d-3cb6ace3b4f8&quot;,&#xd;
+            &quot;fax&quot;: null,&#xd;
+            &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+        },&#xd;
+        &quot;phone_number&quot;: &quot;09750123123&quot;,&#xd;
+        &quot;position&quot;: null,&#xd;
+        &quot;report_to_id&quot;: null,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;website&quot;: &quot;minhop.net&quot;,&#xd;
+    &quot;last_updated&quot;: 1533629648082,&#xd;
+    &quot;address&quot;: {&#xd;
+        &quot;country&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1531991424546,&#xd;
+        &quot;city&quot;: null,&#xd;
+        &quot;zip_postal_code&quot;: null,&#xd;
+        &quot;date_created&quot;: 1531991424546,&#xd;
+        &quot;created_by&quot;: null,&#xd;
+        &quot;street&quot;: &quot;thuy dao mo&quot;,&#xd;
+        &quot;organization&quot;: null,&#xd;
+        &quot;district&quot;: null,&#xd;
+        &quot;modified_by&quot;: null,&#xd;
+        &quot;state&quot;: null,&#xd;
+        &quot;id&quot;: &quot;95ed0d05-4ce6-44be-9525-97a01abc9748&quot;,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;stage_id&quot;: &quot;42ffd585-af79-41fe-bc2c-7b7b1b21b196&quot;,&#xd;
+    &quot;custom_fields&quot;: [&#xd;
+        {&#xd;
+            &quot;field_type_id&quot;: null,&#xd;
+            &quot;field_order&quot;: 12,&#xd;
+            &quot;id_field&quot;: null,&#xd;
+            &quot;object_type&quot;: &quot;LEAD&quot;,&#xd;
+            &quot;field_label&quot;: &quot;School Name&quot;,&#xd;
+            &quot;id&quot;: &quot;0ac83173-83a6-4298-9f12-7c8412343a58&quot;,&#xd;
+            &quot;field_type&quot;: &quot;Text&quot;,&#xd;
+            &quot;value&quot;: {&#xd;
+                &quot;field_id&quot;: &quot;0ac83173-83a6-4298-9f12-7c8412343a58&quot;,&#xd;
+                &quot;field&quot;: {&#xd;
+                    &quot;field_type_id&quot;: null,&#xd;
+                    &quot;field_order&quot;: 12,&#xd;
+                    &quot;id_field&quot;: null,&#xd;
+                    &quot;object_type&quot;: &quot;LEAD&quot;,&#xd;
+                    &quot;field_label&quot;: &quot;School Name&quot;,&#xd;
+                    &quot;id&quot;: &quot;0ac83173-83a6-4298-9f12-7c8412343a58&quot;,&#xd;
+                    &quot;field_type&quot;: &quot;Text&quot;,&#xd;
+                    &quot;required&quot;: false,&#xd;
+                    &quot;status&quot;: &quot;ACTIVATED&quot;,&#xd;
+                    &quot;field_name&quot;: &quot;school_name&quot;&#xd;
+                },&#xd;
+                &quot;object_type&quot;: &quot;LEAD&quot;,&#xd;
+                &quot;field_value&quot;: &quot;22222333344567&quot;,&#xd;
+                &quot;id&quot;: &quot;9890c19e-631d-4f9d-9c9d-2ccf81486f7c&quot;,&#xd;
+                &quot;object_id&quot;: &quot;cc088206-d993-4bb6-8f47-2bec77650ac3&quot;,&#xd;
+                &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+            },&#xd;
+            &quot;required&quot;: false,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;,&#xd;
+            &quot;field_name&quot;: &quot;school_name&quot;&#xd;
+        }&#xd;
+    ],&#xd;
+    &quot;date_created&quot;: 1531974858827,&#xd;
+    &quot;facebook&quot;: null,&#xd;
+    &quot;mobile&quot;: &quot;0975121485&quot;,&#xd;
+    &quot;address_id&quot;: &quot;95ed0d05-4ce6-44be-9525-97a01abc9748&quot;,&#xd;
+    &quot;last_name&quot;: &quot;thuy&quot;,&#xd;
+    &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/152989889243729DzAV.png&quot;,&#xd;
+    &quot;created_by&quot;: {&#xd;
+        &quot;group_permission_id&quot;: null,&#xd;
+        &quot;gender&quot;: &quot;Female&quot;,&#xd;
+        &quot;timezone&quot;: null,&#xd;
+        &quot;latitude&quot;: null,&#xd;
+        &quot;admin&quot;: true,&#xd;
+        &quot;language&quot;: null,&#xd;
+        &quot;sso_id&quot;: &quot;b32b34d0-fa34-4e62-8312-c7972bc32282&quot;,&#xd;
+        &quot;about_me&quot;: null,&#xd;
+        &quot;twitter&quot;: null,&#xd;
+        &quot;report_to&quot;: null,&#xd;
+        &quot;id&quot;: &quot;9bbe7026-4ad4-4d89-83de-cdffc72b151e&quot;,&#xd;
+        &quot;first_name&quot;: &quot;Giang&quot;,&#xd;
+        &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+        &quot;group&quot;: null,&#xd;
+        &quot;longitude&quot;: null,&#xd;
+        &quot;group_permission&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1533545102792,&#xd;
+        &quot;date_created&quot;: 1528103631082,&#xd;
+        &quot;stage_id&quot;: null,&#xd;
+        &quot;facebook&quot;: null,&#xd;
+        &quot;last_name&quot;: &quot;Le&quot;,&#xd;
+        &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/1533197926456LfQ73G.jpg&quot;,&#xd;
+        &quot;gender_id&quot;: null,&#xd;
+        &quot;chat_id&quot;: null,&#xd;
+        &quot;birth_day&quot;: 1533574800000,&#xd;
+        &quot;full_name&quot;: &quot;Giang Le&quot;,&#xd;
+        &quot;stage&quot;: null,&#xd;
+        &quot;group_id&quot;: null,&#xd;
+        &quot;organization&quot;: {&#xd;
+            &quot;last_updated&quot;: 1531808550565,&#xd;
+            &quot;address&quot;: null,&#xd;
+            &quot;date_created&quot;: 1528103630940,&#xd;
+            &quot;tax&quot;: null,&#xd;
+            &quot;title&quot;: null,&#xd;
+            &quot;start_in_month&quot;: null,&#xd;
+            &quot;phone&quot;: null,&#xd;
+            &quot;domain&quot;: &quot;minhhop&quot;,&#xd;
+            &quot;name&quot;: &quot;MINH HOP TECHNOLOGY&quot;,&#xd;
+            &quot;logo&quot;: null,&#xd;
+            &quot;id&quot;: &quot;dd32d3e6-ffd3-46bb-bf5d-3cb6ace3b4f8&quot;,&#xd;
+            &quot;fax&quot;: null,&#xd;
+            &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+        },&#xd;
+        &quot;phone_number&quot;: &quot;0948005558&quot;,&#xd;
+        &quot;position&quot;: null,&#xd;
+        &quot;report_to_id&quot;: null,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;followed&quot;: false,&#xd;
+    &quot;tags&quot;: [],&#xd;
+    &quot;birth_day&quot;: null,&#xd;
+    &quot;rating_id&quot;: null,&#xd;
+    &quot;stage&quot;: {&#xd;
+        &quot;color&quot;: null,&#xd;
+        &quot;converted&quot;: false,&#xd;
+        &quot;name&quot;: &quot;Working&quot;,&#xd;
+        &quot;description&quot;: &quot;&lt;p class=\&quot;color\&quot;&gt;&lt;strong&gt;Verify contact information and qualify your lead.&lt;/strong&gt;&lt;/p&gt;\n                    &lt;p&gt;Gather as much contact information as you can. Get tips from the pros about &lt;u&gt;the importance of qualifying your lead&lt;/u&gt;.&lt;/p&gt;\n                    &lt;ul&gt;\n                        &lt;li&gt;Get your lead&apos;s email address, phone number, and title so that you can include your lead in future campaigns.&lt;/li&gt;\n                        &lt;li&gt;Email your lead first, and immediately follow up with a phone call.&lt;/li&gt;\n                        &lt;li&gt;Rehearse your call scripts so that you sound confident and the flow of your conversation is more natural.&lt;/li&gt;\n                    &lt;/ul&gt;&quot;,&#xd;
+        &quot;id&quot;: &quot;42ffd585-af79-41fe-bc2c-7b7b1b21b196&quot;,&#xd;
+        &quot;is_default&quot;: false,&#xd;
+        &quot;priority&quot;: 3,&#xd;
+        &quot;fields&quot;: [&#xd;
+            106,&#xd;
+            112,&#xd;
+            111,&#xd;
+            110,&#xd;
+            125&#xd;
+        ],&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;converted&quot;: false,&#xd;
+    &quot;phone&quot;: &quot;0975000487&quot;,&#xd;
+    &quot;modified_by&quot;: {&#xd;
+        &quot;group_permission_id&quot;: null,&#xd;
+        &quot;gender&quot;: &quot;Female&quot;,&#xd;
+        &quot;timezone&quot;: null,&#xd;
+        &quot;latitude&quot;: null,&#xd;
+        &quot;admin&quot;: true,&#xd;
+        &quot;language&quot;: null,&#xd;
+        &quot;sso_id&quot;: &quot;b32b34d0-fa34-4e62-8312-c7972bc32282&quot;,&#xd;
+        &quot;about_me&quot;: null,&#xd;
+        &quot;twitter&quot;: null,&#xd;
+        &quot;report_to&quot;: null,&#xd;
+        &quot;id&quot;: &quot;9bbe7026-4ad4-4d89-83de-cdffc72b151e&quot;,&#xd;
+        &quot;first_name&quot;: &quot;Giang&quot;,&#xd;
+        &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+        &quot;group&quot;: null,&#xd;
+        &quot;longitude&quot;: null,&#xd;
+        &quot;group_permission&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1533545102792,&#xd;
+        &quot;date_created&quot;: 1528103631082,&#xd;
+        &quot;stage_id&quot;: null,&#xd;
+        &quot;facebook&quot;: null,&#xd;
+        &quot;last_name&quot;: &quot;Le&quot;,&#xd;
+        &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/1533197926456LfQ73G.jpg&quot;,&#xd;
+        &quot;gender_id&quot;: null,&#xd;
+        &quot;chat_id&quot;: null,&#xd;
+        &quot;birth_day&quot;: 1533574800000,&#xd;
+        &quot;full_name&quot;: &quot;Giang Le&quot;,&#xd;
+        &quot;stage&quot;: null,&#xd;
+        &quot;group_id&quot;: null,&#xd;
+        &quot;organization&quot;: {&#xd;
+            &quot;last_updated&quot;: 1531808550565,&#xd;
+            &quot;address&quot;: null,&#xd;
+            &quot;date_created&quot;: 1528103630940,&#xd;
+            &quot;tax&quot;: null,&#xd;
+            &quot;title&quot;: null,&#xd;
+            &quot;start_in_month&quot;: null,&#xd;
+            &quot;phone&quot;: null,&#xd;
+            &quot;domain&quot;: &quot;minhhop&quot;,&#xd;
+            &quot;name&quot;: &quot;MINH HOP TECHNOLOGY&quot;,&#xd;
+            &quot;logo&quot;: null,&#xd;
+            &quot;id&quot;: &quot;dd32d3e6-ffd3-46bb-bf5d-3cb6ace3b4f8&quot;,&#xd;
+            &quot;fax&quot;: null,&#xd;
+            &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+        },&#xd;
+        &quot;phone_number&quot;: &quot;0948005558&quot;,&#xd;
+        &quot;position&quot;: null,&#xd;
+        &quot;report_to_id&quot;: null,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;salutation_id&quot;: null,&#xd;
+    &quot;producer&quot;: {},&#xd;
+    &quot;salutation&quot;: null,&#xd;
+    &quot;fullname&quot;: &quot;dao thuy&quot;,&#xd;
+    &quot;source_id&quot;: &quot;cd9ed356-0aa6-4e19-b035-1c59cc763d96&quot;,&#xd;
+    &quot;employees&quot;: 0,&#xd;
+    &quot;read_dt&quot;: 1533629648042,&#xd;
+    &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/leads/${lead_id}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="UPLOAD DOCUMENT" enabled="true">
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              <elementProp name="C:\Users\nttly\OneDrive\Desktop\picLinh.jpg" elementType="HTTPFileArg">
+                <stringProp name="File.path">C:\Users\nttly\OneDrive\Desktop\picLinh.jpg</stringProp>
+                <stringProp name="File.paramname">files</stringProp>
+                <stringProp name="File.mimetype">image/png</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="related_object" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${lead}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">related_object</stringProp>
+              </elementProp>
+              <elementProp name="uuid" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${lead_id}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">uuid</stringProp>
+              </elementProp>
+              <elementProp name="description" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">${descriptions}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">description</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/documents</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">true</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">multipart/form-data</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET LEADS" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+    &quot;company_phone&quot;: null,&#xd;
+    &quot;industry_id&quot;: null,&#xd;
+    &quot;owner_id&quot;: &quot;af4ec815-a876-4525-842c-e4ec936aac82&quot;,&#xd;
+    &quot;latitude&quot;: 20.250615,&#xd;
+    &quot;rating&quot;: null,&#xd;
+    &quot;description&quot;: null,&#xd;
+    &quot;industry&quot;: null,&#xd;
+    &quot;source&quot;: {&#xd;
+        &quot;name&quot;: &quot;Social Network&quot;,&#xd;
+        &quot;id&quot;: &quot;cd9ed356-0aa6-4e19-b035-1c59cc763d96&quot;,&#xd;
+        &quot;type&quot;: &quot;LEAD&quot;,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;linkedin&quot;: null,&#xd;
+    &quot;title&quot;: null,&#xd;
+    &quot;skype&quot;: null,&#xd;
+    &quot;revenue&quot;: &quot;444&quot;,&#xd;
+    &quot;twitter&quot;: null,&#xd;
+    &quot;company&quot;: &quot;company name&quot;,&#xd;
+    &quot;id&quot;: &quot;cc088206-d993-4bb6-8f47-2bec77650ac3&quot;,&#xd;
+    &quot;fax&quot;: null,&#xd;
+    &quot;first_name&quot;: &quot;dao&quot;,&#xd;
+    &quot;email&quot;: &quot;thuytest1234@gmail.com&quot;,&#xd;
+    &quot;longitude&quot;: 105.974454,&#xd;
+    &quot;owner&quot;: {&#xd;
+        &quot;group_permission_id&quot;: null,&#xd;
+        &quot;gender&quot;: null,&#xd;
+        &quot;timezone&quot;: null,&#xd;
+        &quot;latitude&quot;: null,&#xd;
+        &quot;admin&quot;: false,&#xd;
+        &quot;language&quot;: null,&#xd;
+        &quot;sso_id&quot;: &quot;fb415567-4ff6-4ce8-9cf6-3b79ffbc8c16&quot;,&#xd;
+        &quot;about_me&quot;: null,&#xd;
+        &quot;twitter&quot;: null,&#xd;
+        &quot;report_to&quot;: null,&#xd;
+        &quot;id&quot;: &quot;af4ec815-a876-4525-842c-e4ec936aac82&quot;,&#xd;
+        &quot;first_name&quot;: &quot;thuy&quot;,&#xd;
+        &quot;email&quot;: &quot;thuyasdasddao@gmail.com&quot;,&#xd;
+        &quot;group&quot;: null,&#xd;
+        &quot;longitude&quot;: null,&#xd;
+        &quot;group_permission&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1531745348608,&#xd;
+        &quot;date_created&quot;: 1529988109014,&#xd;
+        &quot;stage_id&quot;: null,&#xd;
+        &quot;facebook&quot;: null,&#xd;
+        &quot;last_name&quot;: &quot;09750123123&quot;,&#xd;
+        &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/1529979296187zLWtq1.png&quot;,&#xd;
+        &quot;gender_id&quot;: null,&#xd;
+        &quot;chat_id&quot;: null,&#xd;
+        &quot;birth_day&quot;: null,&#xd;
+        &quot;full_name&quot;: &quot;thuy 09750123123&quot;,&#xd;
+        &quot;stage&quot;: null,&#xd;
+        &quot;group_id&quot;: null,&#xd;
+        &quot;organization&quot;: {&#xd;
+            &quot;last_updated&quot;: 1531808550565,&#xd;
+            &quot;address&quot;: null,&#xd;
+            &quot;date_created&quot;: 1528103630940,&#xd;
+            &quot;tax&quot;: null,&#xd;
+            &quot;title&quot;: null,&#xd;
+            &quot;start_in_month&quot;: null,&#xd;
+            &quot;phone&quot;: null,&#xd;
+            &quot;domain&quot;: &quot;minhhop&quot;,&#xd;
+            &quot;name&quot;: &quot;MINH HOP TECHNOLOGY&quot;,&#xd;
+            &quot;logo&quot;: null,&#xd;
+            &quot;id&quot;: &quot;dd32d3e6-ffd3-46bb-bf5d-3cb6ace3b4f8&quot;,&#xd;
+            &quot;fax&quot;: null,&#xd;
+            &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+        },&#xd;
+        &quot;phone_number&quot;: &quot;09750123123&quot;,&#xd;
+        &quot;position&quot;: null,&#xd;
+        &quot;report_to_id&quot;: null,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;website&quot;: &quot;minhop.net&quot;,&#xd;
+    &quot;last_updated&quot;: 1533629648082,&#xd;
+    &quot;address&quot;: {&#xd;
+        &quot;country&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1531991424546,&#xd;
+        &quot;city&quot;: null,&#xd;
+        &quot;zip_postal_code&quot;: null,&#xd;
+        &quot;date_created&quot;: 1531991424546,&#xd;
+        &quot;created_by&quot;: null,&#xd;
+        &quot;street&quot;: &quot;thuy dao mo&quot;,&#xd;
+        &quot;organization&quot;: null,&#xd;
+        &quot;district&quot;: null,&#xd;
+        &quot;modified_by&quot;: null,&#xd;
+        &quot;state&quot;: null,&#xd;
+        &quot;id&quot;: &quot;95ed0d05-4ce6-44be-9525-97a01abc9748&quot;,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;stage_id&quot;: &quot;42ffd585-af79-41fe-bc2c-7b7b1b21b196&quot;,&#xd;
+    &quot;custom_fields&quot;: [&#xd;
+        {&#xd;
+            &quot;field_type_id&quot;: null,&#xd;
+            &quot;field_order&quot;: 12,&#xd;
+            &quot;id_field&quot;: null,&#xd;
+            &quot;object_type&quot;: &quot;LEAD&quot;,&#xd;
+            &quot;field_label&quot;: &quot;School Name&quot;,&#xd;
+            &quot;id&quot;: &quot;0ac83173-83a6-4298-9f12-7c8412343a58&quot;,&#xd;
+            &quot;field_type&quot;: &quot;Text&quot;,&#xd;
+            &quot;value&quot;: {&#xd;
+                &quot;field_id&quot;: &quot;0ac83173-83a6-4298-9f12-7c8412343a58&quot;,&#xd;
+                &quot;field&quot;: {&#xd;
+                    &quot;field_type_id&quot;: null,&#xd;
+                    &quot;field_order&quot;: 12,&#xd;
+                    &quot;id_field&quot;: null,&#xd;
+                    &quot;object_type&quot;: &quot;LEAD&quot;,&#xd;
+                    &quot;field_label&quot;: &quot;School Name&quot;,&#xd;
+                    &quot;id&quot;: &quot;0ac83173-83a6-4298-9f12-7c8412343a58&quot;,&#xd;
+                    &quot;field_type&quot;: &quot;Text&quot;,&#xd;
+                    &quot;required&quot;: false,&#xd;
+                    &quot;status&quot;: &quot;ACTIVATED&quot;,&#xd;
+                    &quot;field_name&quot;: &quot;school_name&quot;&#xd;
+                },&#xd;
+                &quot;object_type&quot;: &quot;LEAD&quot;,&#xd;
+                &quot;field_value&quot;: &quot;22222333344567&quot;,&#xd;
+                &quot;id&quot;: &quot;9890c19e-631d-4f9d-9c9d-2ccf81486f7c&quot;,&#xd;
+                &quot;object_id&quot;: &quot;cc088206-d993-4bb6-8f47-2bec77650ac3&quot;,&#xd;
+                &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+            },&#xd;
+            &quot;required&quot;: false,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;,&#xd;
+            &quot;field_name&quot;: &quot;school_name&quot;&#xd;
+        }&#xd;
+    ],&#xd;
+    &quot;date_created&quot;: 1531974858827,&#xd;
+    &quot;facebook&quot;: null,&#xd;
+    &quot;mobile&quot;: &quot;0975121485&quot;,&#xd;
+    &quot;address_id&quot;: &quot;95ed0d05-4ce6-44be-9525-97a01abc9748&quot;,&#xd;
+    &quot;last_name&quot;: &quot;thuy&quot;,&#xd;
+    &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/152989889243729DzAV.png&quot;,&#xd;
+    &quot;created_by&quot;: {&#xd;
+        &quot;group_permission_id&quot;: null,&#xd;
+        &quot;gender&quot;: &quot;Female&quot;,&#xd;
+        &quot;timezone&quot;: null,&#xd;
+        &quot;latitude&quot;: null,&#xd;
+        &quot;admin&quot;: true,&#xd;
+        &quot;language&quot;: null,&#xd;
+        &quot;sso_id&quot;: &quot;b32b34d0-fa34-4e62-8312-c7972bc32282&quot;,&#xd;
+        &quot;about_me&quot;: null,&#xd;
+        &quot;twitter&quot;: null,&#xd;
+        &quot;report_to&quot;: null,&#xd;
+        &quot;id&quot;: &quot;9bbe7026-4ad4-4d89-83de-cdffc72b151e&quot;,&#xd;
+        &quot;first_name&quot;: &quot;Giang&quot;,&#xd;
+        &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+        &quot;group&quot;: null,&#xd;
+        &quot;longitude&quot;: null,&#xd;
+        &quot;group_permission&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1533545102792,&#xd;
+        &quot;date_created&quot;: 1528103631082,&#xd;
+        &quot;stage_id&quot;: null,&#xd;
+        &quot;facebook&quot;: null,&#xd;
+        &quot;last_name&quot;: &quot;Le&quot;,&#xd;
+        &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/1533197926456LfQ73G.jpg&quot;,&#xd;
+        &quot;gender_id&quot;: null,&#xd;
+        &quot;chat_id&quot;: null,&#xd;
+        &quot;birth_day&quot;: 1533574800000,&#xd;
+        &quot;full_name&quot;: &quot;Giang Le&quot;,&#xd;
+        &quot;stage&quot;: null,&#xd;
+        &quot;group_id&quot;: null,&#xd;
+        &quot;organization&quot;: {&#xd;
+            &quot;last_updated&quot;: 1531808550565,&#xd;
+            &quot;address&quot;: null,&#xd;
+            &quot;date_created&quot;: 1528103630940,&#xd;
+            &quot;tax&quot;: null,&#xd;
+            &quot;title&quot;: null,&#xd;
+            &quot;start_in_month&quot;: null,&#xd;
+            &quot;phone&quot;: null,&#xd;
+            &quot;domain&quot;: &quot;minhhop&quot;,&#xd;
+            &quot;name&quot;: &quot;MINH HOP TECHNOLOGY&quot;,&#xd;
+            &quot;logo&quot;: null,&#xd;
+            &quot;id&quot;: &quot;dd32d3e6-ffd3-46bb-bf5d-3cb6ace3b4f8&quot;,&#xd;
+            &quot;fax&quot;: null,&#xd;
+            &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+        },&#xd;
+        &quot;phone_number&quot;: &quot;0948005558&quot;,&#xd;
+        &quot;position&quot;: null,&#xd;
+        &quot;report_to_id&quot;: null,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;followed&quot;: false,&#xd;
+    &quot;tags&quot;: [],&#xd;
+    &quot;birth_day&quot;: null,&#xd;
+    &quot;rating_id&quot;: null,&#xd;
+    &quot;stage&quot;: {&#xd;
+        &quot;color&quot;: null,&#xd;
+        &quot;converted&quot;: false,&#xd;
+        &quot;name&quot;: &quot;Working&quot;,&#xd;
+        &quot;description&quot;: &quot;&lt;p class=\&quot;color\&quot;&gt;&lt;strong&gt;Verify contact information and qualify your lead.&lt;/strong&gt;&lt;/p&gt;\n                    &lt;p&gt;Gather as much contact information as you can. Get tips from the pros about &lt;u&gt;the importance of qualifying your lead&lt;/u&gt;.&lt;/p&gt;\n                    &lt;ul&gt;\n                        &lt;li&gt;Get your lead&apos;s email address, phone number, and title so that you can include your lead in future campaigns.&lt;/li&gt;\n                        &lt;li&gt;Email your lead first, and immediately follow up with a phone call.&lt;/li&gt;\n                        &lt;li&gt;Rehearse your call scripts so that you sound confident and the flow of your conversation is more natural.&lt;/li&gt;\n                    &lt;/ul&gt;&quot;,&#xd;
+        &quot;id&quot;: &quot;42ffd585-af79-41fe-bc2c-7b7b1b21b196&quot;,&#xd;
+        &quot;is_default&quot;: false,&#xd;
+        &quot;priority&quot;: 3,&#xd;
+        &quot;fields&quot;: [&#xd;
+            106,&#xd;
+            112,&#xd;
+            111,&#xd;
+            110,&#xd;
+            125&#xd;
+        ],&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;converted&quot;: false,&#xd;
+    &quot;phone&quot;: &quot;0975000487&quot;,&#xd;
+    &quot;modified_by&quot;: {&#xd;
+        &quot;group_permission_id&quot;: null,&#xd;
+        &quot;gender&quot;: &quot;Female&quot;,&#xd;
+        &quot;timezone&quot;: null,&#xd;
+        &quot;latitude&quot;: null,&#xd;
+        &quot;admin&quot;: true,&#xd;
+        &quot;language&quot;: null,&#xd;
+        &quot;sso_id&quot;: &quot;b32b34d0-fa34-4e62-8312-c7972bc32282&quot;,&#xd;
+        &quot;about_me&quot;: null,&#xd;
+        &quot;twitter&quot;: null,&#xd;
+        &quot;report_to&quot;: null,&#xd;
+        &quot;id&quot;: &quot;9bbe7026-4ad4-4d89-83de-cdffc72b151e&quot;,&#xd;
+        &quot;first_name&quot;: &quot;Giang&quot;,&#xd;
+        &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+        &quot;group&quot;: null,&#xd;
+        &quot;longitude&quot;: null,&#xd;
+        &quot;group_permission&quot;: null,&#xd;
+        &quot;last_updated&quot;: 1533545102792,&#xd;
+        &quot;date_created&quot;: 1528103631082,&#xd;
+        &quot;stage_id&quot;: null,&#xd;
+        &quot;facebook&quot;: null,&#xd;
+        &quot;last_name&quot;: &quot;Le&quot;,&#xd;
+        &quot;avatar&quot;: &quot;https://s3-ap-southeast-1.amazonaws.com/contactcentral.dev/upload/1533197926456LfQ73G.jpg&quot;,&#xd;
+        &quot;gender_id&quot;: null,&#xd;
+        &quot;chat_id&quot;: null,&#xd;
+        &quot;birth_day&quot;: 1533574800000,&#xd;
+        &quot;full_name&quot;: &quot;Giang Le&quot;,&#xd;
+        &quot;stage&quot;: null,&#xd;
+        &quot;group_id&quot;: null,&#xd;
+        &quot;organization&quot;: {&#xd;
+            &quot;last_updated&quot;: 1531808550565,&#xd;
+            &quot;address&quot;: null,&#xd;
+            &quot;date_created&quot;: 1528103630940,&#xd;
+            &quot;tax&quot;: null,&#xd;
+            &quot;title&quot;: null,&#xd;
+            &quot;start_in_month&quot;: null,&#xd;
+            &quot;phone&quot;: null,&#xd;
+            &quot;domain&quot;: &quot;minhhop&quot;,&#xd;
+            &quot;name&quot;: &quot;MINH HOP TECHNOLOGY&quot;,&#xd;
+            &quot;logo&quot;: null,&#xd;
+            &quot;id&quot;: &quot;dd32d3e6-ffd3-46bb-bf5d-3cb6ace3b4f8&quot;,&#xd;
+            &quot;fax&quot;: null,&#xd;
+            &quot;email&quot;: &quot;giangle@minhhop.net&quot;,&#xd;
+            &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+        },&#xd;
+        &quot;phone_number&quot;: &quot;0948005558&quot;,&#xd;
+        &quot;position&quot;: null,&#xd;
+        &quot;report_to_id&quot;: null,&#xd;
+        &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+    },&#xd;
+    &quot;salutation_id&quot;: null,&#xd;
+    &quot;producer&quot;: {},&#xd;
+    &quot;salutation&quot;: null,&#xd;
+    &quot;fullname&quot;: &quot;dao thuy&quot;,&#xd;
+    &quot;source_id&quot;: &quot;cd9ed356-0aa6-4e19-b035-1c59cc763d96&quot;,&#xd;
+    &quot;employees&quot;: 0,&#xd;
+    &quot;read_dt&quot;: 1533629648042,&#xd;
+    &quot;status&quot;: &quot;ACTIVATED&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">1.0/leads?start=0&amp;max=50&amp;fields=id</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="UPDATE LEAD" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;first_name&quot;: &quot;Linh&quot;,&#xd;
+  &quot;last_name&quot;: &quot;Lin&quot;,&#xd;
+  &quot;salutation&quot;: &quot;&quot;,&#xd;
+  &quot;stage&quot;: &quot;9f44b555-6f29-4a4e-a0b4-1a91f19e63f7&quot;,&#xd;
+  &quot;source&quot;: &quot;cd9ed356-0aa6-4e19-b035-1c59cc763d96&quot;,&#xd;
+  &quot;title&quot; : &quot;test_title&quot;,&#xd;
+  &quot;description&quot;: &quot;descriptions&quot;,&#xd;
+  &quot;industry&quot;: &quot;67abed74-f088-4687-8ec0-694ee36145f8&quot;,&#xd;
+  &quot;website&quot;: &quot;minhop.net&quot;,&#xd;
+  &quot;email&quot;: &quot;thuytest1234@gmail.com&quot;,&#xd;
+  &quot;phone&quot;: &quot;0975000487&quot;,&#xd;
+  &quot;mobile&quot;: &quot;0975121485&quot;,&#xd;
+  &quot;fax&quot;: &quot;07854951254&quot;,&#xd;
+  &quot;twitter&quot;: &quot;https://twitter.com/BarackObama&quot;,&#xd;
+  &quot;facebook&quot;: &quot;http://facebook.com/&quot;,&#xd;
+  &quot;linkedin&quot;: &quot;http://linkedin.com/&quot;,&#xd;
+  &quot;skype&quot;: &quot;http://skype.com/&quot;,&#xd;
+  &quot;tags&quot;: [&quot;tag1&quot;, &quot;tag2&quot;, &quot;tag3&quot;]&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/leads/${lead_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="EDIT INLINE" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;stage_id&quot;: &quot;e5c8a2b1-13dd-4d5c-b6b4-ac3011820875&quot;,&#xd;
+  &quot;company&quot;: &quot;&quot;&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">1.0/leads/${lead_id}</stringProp>
+          <stringProp name="HTTPSampler.method">GET</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CLONE LEAD" enabled="true">
+          <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">{&#xd;
+  &quot;first_name&quot;: &quot;dao&quot;,&#xd;
+  &quot;last_name&quot;: &quot;thu thuy&quot;,&#xd;
+  &quot;salutation&quot;: &quot;&quot;,&#xd;
+  &quot;stage&quot;: &quot;9f44b555-6f29-4a4e-a0b4-1a91f19e63f7&quot;,&#xd;
+  &quot;source&quot;: &quot;cd9ed356-0aa6-4e19-b035-1c59cc763d96&quot;,&#xd;
+  &quot;title&quot; : &quot;test_title&quot;,&#xd;
+  &quot;description&quot;: &quot;descriptions&quot;,&#xd;
+  &quot;industry&quot;: &quot;67abed74-f088-4687-8ec0-694ee36145f8&quot;,&#xd;
+  &quot;website&quot;: &quot;minhop.net&quot;,&#xd;
+  &quot;email&quot;: &quot;thuytest1234@gmail.com&quot;,&#xd;
+  &quot;phone&quot;: &quot;0975000487&quot;,&#xd;
+  &quot;mobile&quot;: &quot;0975121485&quot;,&#xd;
+  &quot;fax&quot;: &quot;07854951254&quot;,&#xd;
+  &quot;twitter&quot;: &quot;https://twitter.com/BarackObama&quot;,&#xd;
+  &quot;facebook&quot;: &quot;http://facebook.com/&quot;,&#xd;
+  &quot;linkedin&quot;: &quot;http://linkedin.com/&quot;,&#xd;
+  &quot;skype&quot;: &quot;http://skype.com/&quot;,&#xd;
+  &quot;tags&quot;: [&quot;tag1&quot;, &quot;tag2&quot;, &quot;tag3&quot;]&#xd;
+}</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/leads/clone/${lead_id}</stringProp>
+          <stringProp name="HTTPSampler.method">PUT</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree/>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="CHANGE LEAD&apos;S AVATAR" enabled="true">
+          <elementProp name="HTTPsampler.Files" elementType="HTTPFileArgs">
+            <collectionProp name="HTTPFileArgs.files">
+              <elementProp name="C:\Users\nttly\OneDrive\Desktop\picLinh.jpg" elementType="HTTPFileArg">
+                <stringProp name="File.path">C:\Users\nttly\OneDrive\Desktop\picLinh.jpg</stringProp>
+                <stringProp name="File.paramname">avatar</stringProp>
+                <stringProp name="File.mimetype">image/jpeg</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments">
+              <elementProp name="avatar" elementType="HTTPArgument">
+                <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                <stringProp name="Argument.value">picLinh.jpg</stringProp>
+                <stringProp name="Argument.metadata">=</stringProp>
+                <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                <stringProp name="Argument.name">avatar</stringProp>
+              </elementProp>
+            </collectionProp>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/leads/avatar/${lead_id}</stringProp>
+          <stringProp name="HTTPSampler.method">POST</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">true</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
+        <hashTree>
+          <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+            <collectionProp name="HeaderManager.headers">
+              <elementProp name="" elementType="Header">
+                <stringProp name="Header.name">Content-Type</stringProp>
+                <stringProp name="Header.value">multipart/form-data</stringProp>
+              </elementProp>
+            </collectionProp>
+          </HeaderManager>
+          <hashTree/>
+          <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+            <boolProp name="ResultCollector.error_logging">false</boolProp>
+            <objProp>
+              <name>saveConfig</name>
+              <value class="SampleSaveConfiguration">
+                <time>true</time>
+                <latency>true</latency>
+                <timestamp>true</timestamp>
+                <success>true</success>
+                <label>true</label>
+                <code>true</code>
+                <message>true</message>
+                <threadName>true</threadName>
+                <dataType>true</dataType>
+                <encoding>false</encoding>
+                <assertions>true</assertions>
+                <subresults>true</subresults>
+                <responseData>false</responseData>
+                <samplerData>false</samplerData>
+                <xml>false</xml>
+                <fieldNames>true</fieldNames>
+                <responseHeaders>false</responseHeaders>
+                <requestHeaders>false</requestHeaders>
+                <responseDataOnError>false</responseDataOnError>
+                <saveAssertionResultsFailureMessage>true</saveAssertionResultsFailureMessage>
+                <assertionsResultsToSave>0</assertionsResultsToSave>
+                <bytes>true</bytes>
+                <sentBytes>true</sentBytes>
+                <threadCounts>true</threadCounts>
+                <idleTime>true</idleTime>
+                <connectTime>true</connectTime>
+              </value>
+            </objProp>
+            <stringProp name="filename"></stringProp>
+          </ResultCollector>
+          <hashTree/>
+        </hashTree>
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="DELETE LEAD" enabled="true">
+          <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+            <collectionProp name="Arguments.arguments"/>
+          </elementProp>
+          <stringProp name="HTTPSampler.domain">${HOST}</stringProp>
+          <stringProp name="HTTPSampler.port">${PORT}</stringProp>
+          <stringProp name="HTTPSampler.protocol">${PROTOCOL}</stringProp>
+          <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+          <stringProp name="HTTPSampler.path">/1.0/leads/${lead_id}ss</stringProp>
+          <stringProp name="HTTPSampler.method">DELETE</stringProp>
+          <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+          <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+          <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+          <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+          <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+          <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+          <stringProp name="HTTPSampler.response_timeout"></stringProp>
+        </HTTPSamplerProxy>
         <hashTree/>
       </hashTree>
       <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
@@ -195,9 +1489,14 @@ if (auth_token == null) {
         <stringProp name="filename"></stringProp>
       </ResultCollector>
       <hashTree/>
-      <DurationAssertion guiclass="DurationAssertionGui" testclass="DurationAssertion" testname="Duration Assertion" enabled="true">
-        <stringProp name="DurationAssertion.duration">3000</stringProp>
-      </DurationAssertion>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
       <hashTree/>
       <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="CRM Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
@@ -218,6 +1517,19 @@ if (auth_token == null) {
           </elementProp>
         </collectionProp>
       </Arguments>
+      <hashTree/>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Authorization</stringProp>
+            <stringProp name="Header.value">Bearer ${__property(token)}</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name"></stringProp>
+            <stringProp name="Header.value"></stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
       <hashTree/>
     </hashTree>
   </hashTree>
